@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html data-theme="dark">
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+  <?!= include('Styles'); ?>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ===== Sidebar ===== -->
+  <aside class="side">
+    <div class="brand">
+      <div class="logo">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 6"/><polyline points="15 6 21 6 21 12"/></svg>
+      </div>
+      <span>SalesPulse</span>
+    </div>
+
+    <div class="nav-h">Navigation</div>
+    <button class="nav active" data-page="overview" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+      <span>Overview</span>
+    </button>
+    <button class="nav" data-page="product" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/></svg>
+      <span>Product &amp; Category</span>
+    </button>
+    <button class="nav" data-page="geo" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      <span>Geographic</span>
+    </button>
+    <button class="nav" data-page="pay" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+      <span>Payment &amp; Orders</span>
+    </button>
+    <button class="nav" data-page="customers" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <span>Customers</span>
+    </button>
+
+    <div class="side-foot">
+      <button id="themeBtn" class="nav" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+        <span id="themeLbl">Light mode</span>
+      </button>
+      <div class="built" id="built"></div>
+    </div>
+  </aside>
+
+  <!-- ===== Main ===== -->
+  <main class="main">
+    <div id="msg" class="loading">Loading data...</div>
+
+    <div id="app" style="display:none">
+      <div class="topbar">
+        <h1 id="ptitle">Overview</h1>
+        <small id="sub"></small>
+      </div>
+
+      <div class="filters">
+        <label>From month<select id="fFrom" class="f"></select></label>
+        <label>To month<select id="fTo" class="f"></select></label>
+        <label>Region<select id="fRegion" class="f"></select></label>
+        <label>Category<select id="fCat" class="f"></select></label>
+        <label>Order status<select id="fStatus" class="f"></select></label>
+        <label>Payment method<select id="fPay" class="f"></select></label>
+        <button id="fReset" type="button">Reset</button>
+      </div>
+      <div id="warn"></div>
+      <div id="empty" class="card" style="display:none; margin-top:14px">No data for the selected filters.</div>
+
+      <div id="dash">
+
+        <!-- ===== Page: Overview ===== -->
+        <section class="page" id="p_overview">
+          <div class="kpis" id="kpis"></div>
+
+          <div class="sec-h">
+            <h3>Revenue Trend Analysis</h3>
+            <p>Which month peaked, where revenue fell, how much it changed from the month before, and whether sales are growing steadily.</p>
+          </div>
+          <div class="row r-2-1">
+            <div class="card"><h4 data-t="Monthly {v} and change vs previous month"></h4><div id="c_month" class="chart tall"></div></div>
+            <div class="answers" id="answers"></div>
+          </div>
+          <div class="card" style="margin-top:14px">
+            <h4>Month by month at a glance</h4>
+            <div id="strip" class="strip"></div>
+          </div>
+
+          <h3 class="sec">Business insights</h3>
+          <div class="insights" id="insights"></div>
+        </section>
+
+        <!-- ===== Page: Product & Category ===== -->
+        <section class="page" id="p_product" style="display:none">
+          <div class="row r-1-1">
+            <div class="card"><h4>Top 10 products by revenue</h4><div id="c_topRev" class="lb"></div></div>
+            <div class="card"><h4>Top 10 products by order count</h4><div id="c_topOrd" class="lb"></div></div>
+          </div>
+          <div class="row r-1-1">
+            <div class="card"><h4 data-t="Category-wise {v}"></h4><div id="c_cat" class="lb compact"></div></div>
+            <div class="card"><h4>Category-wise cancellation rate (500+ orders)</h4><div id="c_catrate" class="lb compact"></div></div>
+          </div>
+          <div class="sec-h">
+            <h3>Which categories need attention?</h3>
+            <p>Categories in the top-left of the chart earn little revenue and lose a high share of orders to cancellation.</p>
+          </div>
+          <div class="row r-2-1">
+            <div class="card"><h4>Revenue vs cancellation rate (bubble size = orders)</h4><div id="c_quad" class="chart tall"></div></div>
+            <div class="answers" id="catAns"></div>
+          </div>
+          <p class="mut note">Product charts follow the month, region and category filters and cover the top products overall (see buildExtras). They do not follow the payment filter.</p>
+        </section>
+
+        <!-- ===== Page: Geographic ===== -->
+        <section class="page" id="p_geo" style="display:none">
+          <div class="row r-1-2">
+            <div class="card"><h4 data-t="Region-wise {v}"></h4><div id="c_region" class="chart"></div></div>
+            <div class="card">
+              <div class="card-h">
+                <h4>US map by state</h4>
+                <div class="seg" data-seg="map">
+                  <button type="button" data-v="rev" class="on">Revenue</button>
+                  <button type="button" data-v="rate">Cancellation %</button>
+                  <button type="button" data-v="lost">Cancelled value</button>
+                </div>
+              </div>
+              <div id="c_map"></div>
+            </div>
+          </div>
+          <div class="row r-1-1">
+            <div class="card"><h4 data-t="Strongest 10 states by {v}"></h4><div id="c_stTop" class="chart"></div></div>
+            <div class="card"><h4 data-t="Weakest 10 states by {v}"></h4><div id="c_stLow" class="chart"></div></div>
+          </div>
+
+          <div class="sec-h">
+            <h3>Where is the opportunity?</h3>
+            <p>Signals from the data, not forecasts. Cancelled value is revenue that was ordered but not completed.</p>
+          </div>
+          <div class="insights" id="geoIns"></div>
+
+          <div class="row"><div class="card"><h4>State performance (click a column to sort)</h4><div id="t_state"></div></div></div>
+          <div class="row"><div class="card"><h4>City performance (click a column to sort)</h4><div id="t_city"></div></div></div>
+          <p class="mut note">States: cancellation % shown for states with 100+ eligible orders. Trend compares the last 3 months of the selected range with the 3 months before it. Cities: top 400 by order volume, cancellation % shown for 30+ orders; follows the month and region filters.</p>
+        </section>
+
+        <!-- ===== Page: Payment & Orders ===== -->
+        <section class="page" id="p_pay" style="display:none">
+          <div class="row r-1-1-1">
+            <div class="card"><h4>Most used payment methods</h4><div id="c_pay" class="chart"></div></div>
+            <div class="card"><h4>Order status share</h4><div id="c_status" class="chart"></div></div>
+            <div class="card"><h4>Cancellation rate by payment method (500+ orders)</h4><div id="c_payrate" class="chart"></div></div>
+          </div>
+          <div class="row r-1-1">
+            <div class="card"><h4>Order status mix by payment method (100% stacked)</h4><div id="c_paystack" class="chart tall"></div></div>
+            <div class="card"><h4>Revenue and order count by payment method</h4><div id="c_paycombo" class="chart tall"></div></div>
+          </div>
+          <div class="row">
+            <div class="card">
+              <div class="card-h">
+                <h4>Monthly trend by payment method</h4>
+                <div class="seg" data-seg="pm">
+                  <button type="button" data-v="rev" class="on">Revenue</button>
+                  <button type="button" data-v="ord">Orders</button>
+                </div>
+              </div>
+              <div id="c_paytrend" class="chart tall"></div>
+            </div>
+          </div>
+          <div class="row"><div class="card"><h4>Payment method details (click a column to sort)</h4><div id="t_pay"></div></div></div>
+        </section>
+
+        <!-- ===== Page: Customers ===== -->
+        <section class="page" id="p_customers" style="display:none">
+          <p class="mut">Customer charts follow only the month and status filters.</p>
+          <div class="row r-1-1">
+            <div class="card"><h4 data-t="Gender: {v}"></h4><div id="c_gender" class="chart"></div></div>
+            <div class="card"><h4 data-t="Age group: {v}"></h4><div id="c_age" class="chart"></div></div>
+          </div>
+        </section>
+
+        <p class="mut note">
+          Revenue = total value of completed orders (status complete + received; "received" is treated as completed, an assumption).
+          Cancellation rate = cancelled / (completed + cancelled + refunded). Orders with in-progress or unclear status are excluded from rates.
+          Locations are as provided in the dataset. Data covers 12 months (Oct 2020 to Sep 2021), so no year-over-year comparison.
+          Arrows compare a month with the month before it.
+        </p>
+      </div>
+    </div>
+  </main>
+</div>
+<?!= include('JavaScript'); ?>
+</body>
+</html>
