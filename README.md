@@ -21,7 +21,7 @@ SalesPulse BI is a sales analytics project built with Google Sheets and Google A
 - Google Charts (if used in the project)
 
 ## Dashboard Preview
-Add your dashboard screenshot here.
+![Dashboard Screenshot](docs/screenshots/dashboard.png)
 
 ## Key Metrics
 - Total Revenue
@@ -37,7 +37,7 @@ Add your dashboard screenshot here.
 - `docs/screenshots/` — Dashboard screenshots
 
 ## Live Demo
-[Open SalesPulse BI](PASTE_YOUR_WEB_APP_URL_HERE)
+[Open SalesPulse BI](https://script.google.com/macros/s/AKfycbzpQMUq0jSQ4SfpLRU3I7fGllEnoMHsECTakBqq8M6OVDxPMKYRSgkxRBApqlWJE8U/exec)
 
 ## Setup
 1. Make a copy of the Google Sheets dataset.
